@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argo-cd-generator
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+    - git:
+        repoURL: https://github.com/SvenskaSpelAB/argo-cd
+        revision: main
+        files:
+          - path: '*.yaml'
+
+  template:
+    metadata:
+      name: 'argo-{{ .cluster }}'
+    spec:
+      source:
+        helm:
+          valueFiles:
+            - '{{ .path }}.yaml'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: argocd
+      syncPolicy:
+        automated:
+          prune: true
