@@ -7,25 +7,28 @@ spec:
   goTemplate: true
   generators:
     - git:
-        repoURL: https://github.com/SvenskaSpelAB/argo-cd
+        repoURL: https://github.com/captain-valross/argo_test
         revision: main
         files:
-          - path: '*.yaml'
+          - path: 'config/*.yaml'
 
   template:
     metadata:
       name: 'argo-{{ .cluster }}'
     spec:
       source:
-        repoURL: https://github.com/SvenskaSpelAB/argo-cd
+        repoURL: https://github.com/captain-valross/argo_test
         targetRevision: HEAD
-        helm:
-          valueFiles:
-            - '{{ .path }}.yaml'
+        path: helm/Chart.yaml
+        #helm:
+        #  valueFiles:
+        #    - 'config/{{ .path.filename }}.yaml'
       project: default
       destination:
         server: https://kubernetes.default.svc
-        namespace: default
+        namespace: 'argocd-{{ .cluster }}'
       syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
         automated:
           prune: true
