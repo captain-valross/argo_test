@@ -22,6 +22,7 @@ spec:
         helm:
           valueFiles:
             - '{{ .path }}.yaml'
+      project: default
       destination:
         server: https://kubernetes.default.svc
         namespace: default
