@@ -17,6 +17,8 @@ spec:
       name: 'argo-{{ .cluster }}'
     spec:
       source:
+        repoURL: https://github.com/SvenskaSpelAB/argo-cd
+        targetRevision: HEAD
         helm:
           valueFiles:
             - '{{ .path }}.yaml'
