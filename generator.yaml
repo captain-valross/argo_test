@@ -19,10 +19,10 @@ spec:
       source:
         repoURL: https://github.com/captain-valross/argo_test
         targetRevision: HEAD
-        path: helm/Chart.yaml
-        #helm:
-        #  valueFiles:
-        #    - 'config/{{ .path.filename }}.yaml'
+        path: helm
+        helm:
+          valueFiles:
+            - '../config/{{ .path.filename }}'
       project: default
       destination:
         server: https://kubernetes.default.svc
