@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argo-cd-generator
+  namespace: default
+spec:
+  goTemplate: true
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: https://github.com/captain-valross/argo_test
+              revision: main
+              files:
+                - path: 'config/*.yaml'
+          - clusters: {}
+#              selector:
+#                matchExpressions:
+#                  - key: '{{ "{{" }} .cluster {{ "}}" }}'
+#                    operator: In
+#                    values:
+#                      - 'true'
+  template:
+    metadata:
+      name: 'argo-{{ "{{" }} .cluster {{ "}}" }}'
+    spec:
+      source:
+        repoURL: https://github.com/captain-valross/argo_test
+        targetRevision: HEAD
+        path: helm
+        helm:
+          valueFiles:
+            - '../config/{{ "{{" }} .path.filename {{ "}}" }}'
+      project: default
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: apps
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+        automated:
+          prune: true
